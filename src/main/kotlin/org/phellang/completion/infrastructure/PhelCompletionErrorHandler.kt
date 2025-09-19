@@ -1,15 +1,15 @@
-package org.phellang.completion
+package org.phellang.completion.infrastructure
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.PsiElement
 
 /**
  * Centralized error handling for Phel completion system
- * Provides graceful fallbacks and meaningful error messages for edge cases
  */
 object PhelCompletionErrorHandler {
     private val LOG = Logger.getInstance(PhelCompletionErrorHandler::class.java)
@@ -23,9 +23,7 @@ object PhelCompletionErrorHandler {
      */
     @JvmStatic
     fun withErrorHandling(
-        operation: CompletionOperation,
-        context: String,
-        fallbackAction: Runnable?
+        operation: CompletionOperation, context: String, fallbackAction: Runnable?
     ): Boolean {
         try {
             operation.execute()
@@ -33,89 +31,31 @@ object PhelCompletionErrorHandler {
         } catch (e: NullPointerException) {
             LOG.warn("Null pointer exception in completion: $context", e)
             addErrorCompletion(
-                operation.result, "⚠️ PSI tree issue",
-                "Completion failed due to null PSI element in $context"
+                operation.result, "⚠️ PSI tree issue", "Completion failed due to null PSI element in $context"
             )
             fallbackAction?.run()
             return false
         } catch (e: IndexOutOfBoundsException) {
             LOG.warn("Index out of bounds in completion: $context", e)
             addErrorCompletion(
-                operation.result, "⚠️ Malformed syntax",
-                "Completion failed due to unexpected syntax structure"
+                operation.result, "⚠️ Malformed syntax", "Completion failed due to unexpected syntax structure"
             )
             fallbackAction?.run()
             return false
         } catch (e: ClassCastException) {
             LOG.warn("Type casting error in completion: $context", e)
             addErrorCompletion(
-                operation.result, "⚠️ Type mismatch",
-                "Completion failed due to unexpected PSI element type"
+                operation.result, "⚠️ Type mismatch", "Completion failed due to unexpected PSI element type"
             )
             fallbackAction?.run()
             return false
         } catch (e: Exception) {
             LOG.error("Unexpected error in completion: $context", e)
             addErrorCompletion(
-                operation.result, "❌ Completion error",
-                "Unexpected error: " + e.message
+                operation.result, "❌ Completion error", "Unexpected error: " + e.message
             )
             fallbackAction?.run()
             return false
-        }
-    }
-
-    /**
-     * Safely get PSI element text with null checking
-     */
-    @JvmStatic
-    fun safeGetText(element: PsiElement?): String {
-        try {
-            if (element == null) {
-                LOG.debug("Attempted to get text from null PSI element")
-                return ""
-            }
-            val text = element.text
-            return text ?: ""
-        } catch (e: Exception) {
-            LOG.warn("Error getting text from PSI element", e)
-            return ""
-        }
-    }
-
-    /**
-     * Safely get PSI element children with null checking
-     */
-    @JvmStatic
-    fun safeGetChildren(element: PsiElement?): Array<PsiElement> {
-        try {
-            if (element == null) {
-                return arrayOf()
-            }
-            val children: Array<PsiElement> = element.children
-            return children
-        } catch (_: Exception) {
-            return arrayOf()
-        }
-    }
-
-    /**
-     * Safely access array element with bounds checking
-     */
-    fun <T> safeArrayAccess(array: Array<T>, index: Int): T? {
-        if (array.isEmpty()) {
-            LOG.debug("Attempted to access element from empty array at index $index")
-            return null
-        }
-        if (index < 0 || index >= array.size) {
-            LOG.debug("Array index out of bounds: " + index + " (length: " + array.size + ")")
-            return null
-        }
-        try {
-            return array[index]
-        } catch (e: Exception) {
-            LOG.warn("Unexpected error accessing array element at index $index", e)
-            return null
         }
     }
 
@@ -123,16 +63,13 @@ object PhelCompletionErrorHandler {
      * Add error completion item to inform user of completion issues
      */
     private fun addErrorCompletion(
-        result: CompletionResultSet?,
-        name: String,
-        description: String
+        result: CompletionResultSet?, name: String, description: String
     ) {
         if (result == null) return
 
         try {
-            val errorElement = LookupElementBuilder.create(name)
-                .withTailText(" - $description", true)
-                .withIcon(PhelIconProvider.STRUCTURAL)
+            val errorElement = LookupElementBuilder.create(name).withTailText(" - $description", true)
+                .withIcon(AllIcons.General.Information)
                 .withInsertHandler { context: InsertionContext?, _: LookupElement? ->
                     // Remove the error completion after insertion
                     context!!.document.deleteString(context.startOffset, context.tailOffset)

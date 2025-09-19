@@ -49,7 +49,7 @@ object PhelSymbolAnalyzer {
             }
 
             false
-        }, "isDefinition") ?: false
+        }) ?: false
     }
 
     /**
@@ -118,7 +118,7 @@ object PhelSymbolAnalyzer {
             }
 
             false
-        }, "isFunctionParameter") ?: false
+        }) ?: false
     }
 
     /**
@@ -158,7 +158,7 @@ object PhelSymbolAnalyzer {
             }
 
             false
-        }, "isLetBinding") ?: false
+        }) ?: false
     }
 
     /**
@@ -182,7 +182,7 @@ object PhelSymbolAnalyzer {
         return PhelErrorHandler.safeOperation({
             val text = symbol.text ?: return@safeOperation false
             text.contains('/')
-        }, "isQualifiedSymbol") ?: false
+        }) ?: false
     }
 
     /**
@@ -197,6 +197,6 @@ object PhelSymbolAnalyzer {
                 isDefinition(symbol) -> "global"
                 else -> null
             }
-        }, "getBindingScope")
+        })
     }
 }

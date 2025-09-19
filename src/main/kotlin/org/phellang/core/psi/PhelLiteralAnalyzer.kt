@@ -29,7 +29,7 @@ object PhelLiteralAnalyzer {
                 text.startsWith("\\") -> "char"
                 else -> "unknown"
             }
-        }, "getLiteralType")
+        })
     }
 
     /**
@@ -46,7 +46,7 @@ object PhelLiteralAnalyzer {
                 "char" -> if (text.length > 1) text.substring(1) else text
                 else -> text
             }
-        }, "getLiteralText")
+        })
     }
 
     /**
@@ -57,7 +57,7 @@ object PhelLiteralAnalyzer {
         return PhelErrorHandler.safeOperation({
             val type = getLiteralType(literal)
             type in setOf("number", "hexnum", "binnum", "octnum")
-        }, "isNumericLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -67,7 +67,7 @@ object PhelLiteralAnalyzer {
     fun isStringLiteral(literal: PhelLiteral): Boolean {
         return PhelErrorHandler.safeOperation({
             getLiteralType(literal) == "string"
-        }, "isStringLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -77,7 +77,7 @@ object PhelLiteralAnalyzer {
     fun isBooleanLiteral(literal: PhelLiteral): Boolean {
         return PhelErrorHandler.safeOperation({
             getLiteralType(literal) == "boolean"
-        }, "isBooleanLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -87,7 +87,7 @@ object PhelLiteralAnalyzer {
     fun isNilLiteral(literal: PhelLiteral): Boolean {
         return PhelErrorHandler.safeOperation({
             getLiteralType(literal) == "nil"
-        }, "isNilLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -97,7 +97,7 @@ object PhelLiteralAnalyzer {
     fun isCharLiteral(literal: PhelLiteral): Boolean {
         return PhelErrorHandler.safeOperation({
             getLiteralType(literal) == "char"
-        }, "isCharLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -119,7 +119,7 @@ object PhelLiteralAnalyzer {
                 }
             }
             true
-        }, "isValidStringLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -132,7 +132,7 @@ object PhelLiteralAnalyzer {
             text.matches(Regex("[+-]?0x[\\da-fA-F_]+")) ||
             text.matches(Regex("[+-]?0b[01_]+")) ||
             text.matches(Regex("[+-]?0o[0-7_]+"))
-        }, "isValidNumericLiteral") ?: false
+        }) ?: false
     }
 
     /**
@@ -172,7 +172,7 @@ object PhelLiteralAnalyzer {
                 }
                 else -> null
             }
-        }, "getNumericValue")
+        })
     }
 
     /**
@@ -187,6 +187,6 @@ object PhelLiteralAnalyzer {
                 "false" -> false
                 else -> null
             }
-        }, "getBooleanValue")
+        })
     }
 }

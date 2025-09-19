@@ -38,16 +38,10 @@ object PhelErrorHandler {
      * Execute operation with error handling but no fallback.
      * Returns null on error for safe operations.
      */
-    inline fun <T> safeOperation(
-        operation: () -> T?,
-        operationName: String
-    ): T? {
+    inline fun <T> safeOperation(operation: () -> T?): T? {
         return try {
             operation()
-        } catch (e: Exception) {
-            if (PhelConfiguration.ENABLE_COMPLETION_LOGGING) {
-                LOG.warn("Safe operation failed for $operationName: ${e.message}", e)
-            }
+        } catch (_: Exception) {
             null
         }
     }
@@ -56,14 +50,14 @@ object PhelErrorHandler {
      * Safely get text from PSI element with null checks.
      */
     fun safeGetText(element: PsiElement?): String {
-        return safeOperation({ element?.text }, "safeGetText") ?: ""
+        return safeOperation({ element?.text }) ?: ""
     }
 
     /**
      * Safely get children from PSI element with error handling.
      */
     fun safeGetChildren(element: PsiElement?): Array<PsiElement> {
-        return safeOperation({ element?.children }, "safeGetChildren") ?: emptyArray()
+        return safeOperation({ element?.children }) ?: emptyArray()
     }
 
     /**
@@ -72,7 +66,7 @@ object PhelErrorHandler {
     fun <T> safeArrayAccess(array: Array<T>?, index: Int): T? {
         return safeOperation({
             if (array != null && index >= 0 && index < array.size) array[index] else null
-        }, "safeArrayAccess")
+        })
     }
 
     /**
@@ -81,7 +75,7 @@ object PhelErrorHandler {
     fun <T> safeListAccess(list: List<T>?, index: Int): T? {
         return safeOperation({
             if (list != null && index >= 0 && index < list.size) list[index] else null
-        }, "safeListAccess")
+        })
     }
 
     /**
@@ -90,7 +84,7 @@ object PhelErrorHandler {
     fun isValidCompletionContext(element: PsiElement?): Boolean {
         return safeOperation({
             element != null && element.isValid && element.containingFile != null
-        }, "isValidCompletionContext") ?: false
+        }) ?: false
     }
 
     /**
@@ -99,7 +93,7 @@ object PhelErrorHandler {
     fun isValidPsiElement(element: PsiElement?): Boolean {
         return safeOperation({
             element != null && element.isValid
-        }, "isValidPsiElement") ?: false
+        }) ?: false
     }
 
     /**
@@ -125,7 +119,7 @@ object PhelErrorHandler {
     fun safeToString(value: Any?): String {
         return safeOperation({
             value?.toString()
-        }, "safeToString") ?: "null"
+        }) ?: "null"
     }
 
     /**

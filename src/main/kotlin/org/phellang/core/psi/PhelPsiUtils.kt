@@ -3,7 +3,6 @@ package org.phellang.core.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
-import org.phellang.core.config.PhelConfiguration
 import org.phellang.core.utils.PhelErrorHandler
 import org.phellang.language.psi.*
 
@@ -30,7 +29,7 @@ object PhelPsiUtils {
             } else {
                 text
             }
-        }, "getName")
+        })
     }
 
     /**
@@ -48,7 +47,7 @@ object PhelPsiUtils {
             } else {
                 null
             }
-        }, "getQualifier")
+        })
     }
 
     /**
@@ -66,7 +65,7 @@ object PhelPsiUtils {
             } else {
                 symbol.textRange.startOffset
             }
-        }, "getNameTextOffset") ?: 0
+        }) ?: 0
     }
 
     /**
@@ -112,7 +111,7 @@ object PhelPsiUtils {
     fun getReference(symbol: PhelSymbol): PsiReference? {
         return PhelErrorHandler.safeOperation({
             symbol.reference
-        }, "getReference")
+        })
     }
 
     /**
@@ -123,7 +122,7 @@ object PhelPsiUtils {
         return PhelErrorHandler.safeOperation({
             val forms = PsiTreeUtil.getChildrenOfType(list, PhelForm::class.java)
             if (forms != null && forms.isNotEmpty()) forms[0] else null
-        }, "getFirst")
+        })
     }
 
     /**
@@ -133,7 +132,7 @@ object PhelPsiUtils {
     fun getForms(list: PhelList): Array<PhelForm> {
         return PhelErrorHandler.safeOperation({
             PsiTreeUtil.getChildrenOfType(list, PhelForm::class.java) ?: emptyArray()
-        }, "getForms") ?: emptyArray()
+        }) ?: emptyArray()
     }
 
     /**
@@ -143,7 +142,7 @@ object PhelPsiUtils {
     inline fun <reified T : PsiElement> findChildOfType(element: PsiElement): T? {
         return PhelErrorHandler.safeOperation({
             PsiTreeUtil.findChildOfType(element, T::class.java)
-        }, "findChildOfType")
+        })
     }
 
     /**
@@ -153,7 +152,7 @@ object PhelPsiUtils {
     inline fun <reified T : PsiElement> findParentOfType(element: PsiElement): T? {
         return PhelErrorHandler.safeOperation({
             PsiTreeUtil.getParentOfType(element, T::class.java)
-        }, "findParentOfType")
+        })
     }
 
     /**
@@ -163,7 +162,7 @@ object PhelPsiUtils {
     inline fun <reified T : PsiElement> getChildrenOfType(element: PsiElement): Array<T> {
         return PhelErrorHandler.safeOperation({
             PsiTreeUtil.getChildrenOfType(element, T::class.java) ?: emptyArray()
-        }, "getChildrenOfType") ?: emptyArray()
+        }) ?: emptyArray()
     }
 
     /**

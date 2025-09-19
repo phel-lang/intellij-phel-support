@@ -16,7 +16,7 @@ object PhelFormAnalyzer {
     fun toString(form: PhelForm): String {
         return PhelErrorHandler.safeOperation({
             "PhelForm(${form.text})"
-        }, "toString") ?: "PhelForm(invalid)"
+        }) ?: "PhelForm(invalid)"
     }
 
     /**
@@ -26,7 +26,7 @@ object PhelFormAnalyzer {
     fun toString(metadata: PhelMetadata): String {
         return PhelErrorHandler.safeOperation({
             "PhelMetadata(${metadata.text})"
-        }, "toString") ?: "PhelMetadata(invalid)"
+        }) ?: "PhelMetadata(invalid)"
     }
 
     /**
@@ -36,7 +36,7 @@ object PhelFormAnalyzer {
     fun toString(readerMacro: PhelReaderMacro): String {
         return PhelErrorHandler.safeOperation({
             "PhelReaderMacro(${readerMacro.text})"
-        }, "toString") ?: "PhelReaderMacro(invalid)"
+        }) ?: "PhelReaderMacro(invalid)"
     }
 
     /**
@@ -46,7 +46,7 @@ object PhelFormAnalyzer {
     fun isListForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelList>(form) != null
-        }, "isListForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -56,7 +56,7 @@ object PhelFormAnalyzer {
     fun isVectorForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelVec>(form) != null
-        }, "isVectorForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -66,7 +66,7 @@ object PhelFormAnalyzer {
     fun isMapForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelMap>(form) != null
-        }, "isMapForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -76,7 +76,7 @@ object PhelFormAnalyzer {
     fun isSymbolForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelSymbol>(form) != null
-        }, "isSymbolForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -86,7 +86,7 @@ object PhelFormAnalyzer {
     fun isLiteralForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelLiteral>(form) != null
-        }, "isLiteralForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -96,7 +96,7 @@ object PhelFormAnalyzer {
     fun isKeywordForm(form: PhelForm): Boolean {
         return PhelErrorHandler.safeOperation({
             PhelPsiUtils.findChildOfType<PhelKeyword>(form) != null
-        }, "isKeywordForm") ?: false
+        }) ?: false
     }
 
     /**
@@ -114,7 +114,7 @@ object PhelFormAnalyzer {
                 isKeywordForm(form) -> "keyword"
                 else -> "unknown"
             }
-        }, "getFormType") ?: "unknown"
+        }) ?: "unknown"
     }
 
     /**
@@ -173,7 +173,7 @@ object PhelFormAnalyzer {
         return PhelErrorHandler.safeOperation({
             val text = form.text?.trim()
             text.isNullOrEmpty()
-        }, "isEmpty") ?: true
+        }) ?: true
     }
 
     /**
@@ -210,6 +210,6 @@ object PhelFormAnalyzer {
             }
             
             calculateDepth(form, 1)
-        }, "getFormDepth") ?: 0
+        }) ?: 0
     }
 }

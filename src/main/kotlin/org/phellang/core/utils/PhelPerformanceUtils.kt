@@ -35,7 +35,7 @@ object PhelPerformanceUtils {
             }
 
             false
-        }, "shouldSkipExpensiveOperations") ?: true // Skip on error to be safe
+        }) ?: true // Skip on error to be safe
     }
 
     /**

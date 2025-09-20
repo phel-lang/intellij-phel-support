@@ -6,6 +6,8 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IncorrectOperationException
+import org.phellang.core.psi.PhelPsiUtils
+import org.phellang.core.psi.PhelSymbolAnalyzer
 
 /**
  * Reference implementation for Phel symbols that supports resolving to multiple targets.
@@ -17,9 +19,9 @@ import com.intellij.util.IncorrectOperationException
  */
 class PhelReference @JvmOverloads constructor(
     element: PhelSymbol, // If true, find usages; if false, find definitions
-    private val findUsages: Boolean = PhelPsiUtil.isDefinition(element)
+    private val findUsages: Boolean = PhelSymbolAnalyzer.isDefinition(element)
 ) : PsiReferenceBase<PhelSymbol?>(element, calculateRangeInElement(element)), PsiPolyVariantReference {
-    private val symbolName: String? = PhelPsiUtil.getName(element)
+    private val symbolName: String? = PhelPsiUtils.getName(element)
 
     /**
      * Resolve to multiple targets. This is the key method for polyvariant references.
@@ -116,7 +118,7 @@ class PhelReference @JvmOverloads constructor(
         val usages: MutableList<PsiElement> = ArrayList()
 
         // For function parameters, let bindings, etc., only search within the local scope
-        if (PhelPsiUtil.isDefinition(myElement!!) && this.isLocalBinding) {
+        if (PhelSymbolAnalyzer.isDefinition(myElement!!) && this.isLocalBinding) {
             // For local bindings, search only within the containing form (function/let block)
             val localUsages = findUsagesInLocalScope()
             if (!localUsages.isEmpty()) {
@@ -132,7 +134,7 @@ class PhelReference @JvmOverloads constructor(
 
             for (symbol in allSymbols) {
                 if (symbol !== null) {
-                    val name = PhelPsiUtil.getName(symbol)
+                    val name = PhelPsiUtils.getName(symbol)
                     if (symbolName == name && symbol !== myElement) {
                         // Include both usages AND other definitions (but not the element we clicked on)
                         usages.add(symbol)
@@ -159,7 +161,7 @@ class PhelReference @JvmOverloads constructor(
                 val allSymbols = PsiTreeUtil.findChildrenOfType(psiFile, PhelSymbol::class.java)
 
                 for (symbol in allSymbols) {
-                    val name = PhelPsiUtil.getName(symbol)
+                    val name = PhelPsiUtils.getName(symbol)
                     if (symbolName == name) {
                         // Include both usages AND definitions from other files
                         usages.add(symbol)
@@ -177,7 +179,7 @@ class PhelReference @JvmOverloads constructor(
          * This checks if it's NOT a top-level definition (def, defn, etc.)
          */
         get() {
-            if (!PhelPsiUtil.isDefinition(myElement!!)) {
+            if (!PhelSymbolAnalyzer.isDefinition(myElement!!)) {
                 return false // Not a definition at all
             }
 
@@ -202,8 +204,8 @@ class PhelReference @JvmOverloads constructor(
         val localSymbols = PsiTreeUtil.findChildrenOfType(containingForm, PhelSymbol::class.java)
 
         for (symbol in localSymbols) {
-            val name = PhelPsiUtil.getName(symbol)
-            if (symbolName == name && symbol !== myElement && !PhelPsiUtil.isDefinition(symbol)) {
+            val name = PhelPsiUtils.getName(symbol)
+            if (symbolName == name && symbol !== myElement && !PhelSymbolAnalyzer.isDefinition(symbol)) {
                 // Include only usages (not other definitions) within local scope
                 usages.add(symbol)
             }

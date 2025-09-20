@@ -2,6 +2,8 @@ package org.phellang.language.psi
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.util.PsiTreeUtil
+import org.phellang.core.psi.PhelPsiUtils
+import org.phellang.core.psi.PhelSymbolAnalyzer
 import javax.swing.Icon
 import kotlin.math.min
 
@@ -11,10 +13,10 @@ import kotlin.math.min
  */
 class PhelItemPresentation(private val myElement: PhelSymbol) : ItemPresentation {
     override fun getPresentableText(): String? {
-        val name = PhelPsiUtil.getName(myElement) ?: return null
+        val name = PhelPsiUtils.getName(myElement) ?: return null
 
         // Add type information if this is a definition
-        if (PhelPsiUtil.isDefinition(myElement)) {
+        if (PhelSymbolAnalyzer.isDefinition(myElement)) {
             val definingKeyword = getDefiningKeyword(myElement)
             val type = getTypeFromDefiningKeyword(definingKeyword)
             if (type != null) {

@@ -7,6 +7,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiReference
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.annotations.NonNls
+import org.phellang.core.psi.PhelPsiUtils
+import org.phellang.core.psi.PhelSymbolAnalyzer
 import org.phellang.language.psi.impl.PhelSFormImpl
 
 /**
@@ -16,7 +18,7 @@ import org.phellang.language.psi.impl.PhelSFormImpl
 abstract class PhelNamedElementImpl(node: ASTNode) : PhelSFormImpl(node), PsiNameIdentifierOwner {
     override fun getName(): String? {
         if (this is PhelSymbol) {
-            return PhelPsiUtil.getName(this as PhelSymbol)
+            return PhelPsiUtils.getName(this as PhelSymbol)
         }
         return null
     }
@@ -36,7 +38,7 @@ abstract class PhelNamedElementImpl(node: ASTNode) : PhelSFormImpl(node), PsiNam
     override fun getReference(): PsiReference? {
         if (this is PhelSymbol) {
             val symbol = this as PhelSymbol
-            val isDefinition = PhelPsiUtil.isDefinition(symbol)
+            val isDefinition = PhelSymbolAnalyzer.isDefinition(symbol)
 
             return if (isDefinition) {
                 PhelReference(symbol, true) // findUsages = true
@@ -48,7 +50,7 @@ abstract class PhelNamedElementImpl(node: ASTNode) : PhelSFormImpl(node), PsiNam
     }
 
     override fun getTextOffset(): Int {
-        return PhelPsiUtil.getNameTextOffset(this as PhelSymbol)
+        return PhelPsiUtils.getNameTextOffset(this as PhelSymbol)
     }
 
     override fun getPresentation(): ItemPresentation? {

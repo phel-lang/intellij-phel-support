@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
+import org.phellang.core.psi.PhelPsiUtils
+import org.phellang.core.psi.PhelSymbolAnalyzer
 import org.phellang.language.PhelLexerAdapter
 import kotlin.math.min
 
@@ -38,7 +40,7 @@ class PhelFindUsagesProvider : FindUsagesProvider {
     override fun getType(element: PsiElement): String {
         if (element is PhelSymbol) {
             // Check if this is a definition and determine its type
-            if (PhelPsiUtil.isDefinition(element)) {
+            if (PhelSymbolAnalyzer.isDefinition(element)) {
                 val definingKeyword = getDefiningKeyword(element)
 
                 return when (definingKeyword) {
@@ -78,7 +80,7 @@ class PhelFindUsagesProvider : FindUsagesProvider {
 
     override fun getDescriptiveName(element: PsiElement): String {
         if (element is PhelSymbol) {
-            val name = PhelPsiUtil.getName(element)
+            val name = PhelPsiUtils.getName(element)
             if (name != null) {
                 // Add type information to the descriptive name
                 val type = getType(element)
@@ -94,7 +96,7 @@ class PhelFindUsagesProvider : FindUsagesProvider {
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
         if (element is PhelSymbol) {
-            val name = PhelPsiUtil.getName(element)
+            val name = PhelPsiUtils.getName(element)
             if (name != null) {
                 // Add context information for better identification
                 val context = getElementContext(element)
@@ -175,7 +177,7 @@ class PhelFindUsagesProvider : FindUsagesProvider {
 
     private fun getFullyQualifiedName(element: PsiElement, name: String): String {
         if (element is PhelSymbol) {
-            val qualifier = PhelPsiUtil.getQualifier(element)
+            val qualifier = PhelPsiUtils.getQualifier(element)
             if (qualifier != null) {
                 return "$qualifier/$name"
             }

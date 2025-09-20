@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import org.phellang.core.psi.PhelSymbolAnalyzer
 import org.phellang.language.psi.*
 import org.phellang.language.psi.PhelAccess
 import org.phellang.language.psi.impl.PhelVecImpl
@@ -56,7 +57,7 @@ class PhelAnnotator : Annotator {
 
     private fun annotateSymbol(symbol: PhelSymbol, text: String, holder: AnnotationHolder) {
         // Function parameters (check first, before other classifications)
-        if (PhelPsiUtil.isDefinition(symbol)) {
+        if (PhelSymbolAnalyzer.isDefinition(symbol)) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(symbol.textRange)
                 .textAttributes(FUNCTION_PARAMETER).create()
             return
